@@ -1,0 +1,31 @@
+{
+  "name": "dummysite-gulpjekyll",
+  "description": "This is a basic boilerplate site that could be generated with my yeoman generator when it's done.",
+  "main": "index.js",
+  "authors": [
+    "Adam Kazai"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "jekyll",
+    "gulp",
+    "sass",
+    "less",
+    "handlebars",
+    "jade"
+  ],
+  "homepage": "https://github.com/kaz-dam/dummysite-gulpjekyll",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.2.3",
+    "handlebars": "^4.0.5",
+    "normalize-css": "^4.1.1",
+    "jquery-touchswipe": "^1.6.15"
+  }
+}
