@@ -15,7 +15,7 @@ gulp.task('default', ['help']);
 gulp.task('test-js', function() {
 	log('Testing js files with JSHint and JSCS');
 
-	return gulp.src(config.everyjs) //todo
+	return gulp.src(config.everyjs)
 			.pipe($.if(args.show, $.print()))
 			.pipe($.jscs())
 			.pipe($.jshint())
@@ -36,29 +36,29 @@ gulp.task('styles', ['clean-styles'], function() {
 gulp.task('fonts', ['clean-fonts'], function() {
 	log('Copying fonts');
 
-	return gulp.src(config.fonts) //todo
-			.pipe(gulp.dest(config.build)); //todo
+	return gulp.src(config.fonts)
+			.pipe(gulp.dest(config.buildFonts));
 });
 
 gulp.task('images', ['clean-images'], function() {
 	log('Copying and compressing the images');
 
-	return gulp.src(config.images) //todo
+	return gulp.src(config.images)
 			.pipe($.imagemin({optimizationLevel: 4}))
-			.pipe(gulp.dest(config.build)); //todo
+			.pipe(gulp.dest(config.buildImages));
 });
 
 gulp.task('clean', function() {
-	var delAll = [].concat(config.build, config.temp); //todo
+	var delAll = [].concat(config.build); // ?
 	clean(delAll);
 });
 
 gulp.task('clean-images', function() {
-	clean(config.build); //todo
+	clean(config.buildImages);
 });
 
 gulp.task('clean-fonts', function() {
-	clean(config.build); //todo
+	clean(config.buildFonts);
 });
 
 gulp.task('clean-styles', function() {
@@ -67,9 +67,8 @@ gulp.task('clean-styles', function() {
 
 gulp.task('clean-code', function() {
 	var files = [].concat(
-		config.temp, //todo js
-		config.build, //todo html
-		config.build //todo js
+		config.cleanjs,
+		config.htmlBuild
 	);
 	clean(files);
 });
