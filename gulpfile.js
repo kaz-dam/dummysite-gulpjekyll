@@ -1,8 +1,10 @@
 var gulp = require('gulp');
 var args = require('yargs').argv;
+var browserify = require('browserify');
 var browserSync = require('browser-sync');
-var config = require('./gulp.config');
+var config = require('./gulp.config')();
 var del = require('del');
+var source = require('vinyl-source-stream');
 var _ = require('lodash');
 var $ = require('gulp-load-plugins')({lazy: true});
 var port = process.env.PORT || config.defaultPort; //todo
@@ -28,7 +30,7 @@ gulp.task('styles', ['clean-styles'], function() {
 			.pipe($.plumber())
 			.pipe($.sass()) //todo
 			.pipe($.autoprefixer({browsers: ['last 2 version', '> 5%']}))
-			.pipe(gulp.dest(config.buildStyle)); //todo
+			.pipe(gulp.dest(config.buildStyle));
 });
 
 gulp.task('fonts', ['clean-fonts'], function() {
@@ -46,30 +48,30 @@ gulp.task('images', ['clean-images'], function() {
 			.pipe(gulp.dest(config.build)); //todo
 });
 
-gulp.task('clean', function(done) {
-	var delall = [].concat(config.build, config.temp); //todo
-	clean(delall, done);
+gulp.task('clean', function() {
+	var delAll = [].concat(config.build, config.temp); //todo
+	clean(delAll);
 });
 
-gulp.task('clean-images', function(done) {
+gulp.task('clean-images', function() {
 	clean(config.build); //todo
 });
 
-gulp.task('clean-fonts', function(done) {
-	clean(config.build, done); //todo
+gulp.task('clean-fonts', function() {
+	clean(config.build); //todo
 });
 
-gulp.task('clean-styles', function(done) {
-	clean(config.buildStyle, done); //todo
+gulp.task('clean-styles', function() {
+	clean(config.buildStyle);
 });
 
-gulp.task('clean-code', function(done) {
+gulp.task('clean-code', function() {
 	var files = [].concat(
 		config.temp, //todo js
 		config.build, //todo html
 		config.build //todo js
 	);
-	clean(files, done);
+	clean(files);
 });
 
 // wiredep, bower
@@ -92,9 +94,9 @@ gulp.task('clean-code', function(done) {
 
 //////////////////////////////////
 
-function clean(path, done) {
+function clean(path) {
 	log('Cleaning out: ' + $.util.colors.blue(path));
-	del(path, done);
+	del(path);
 }
 
 function log(msg) {

@@ -109,5 +109,6 @@ bower_components
 
 ### Jekyll ###
 _site/
+serve/
 .sass-cache/
 .jekyll-metadata
