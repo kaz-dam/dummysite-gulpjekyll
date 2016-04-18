@@ -1,6 +1,8 @@
 module.exports = function() {
 	var config = {
 
+		defaultPort: 8080,
+
 		build: './serve/',
 		buildFonts: './serve/assets/fonts/',
 		fonts: './src/assets/fonts/*.css',
@@ -11,6 +13,7 @@ module.exports = function() {
 		* html
 		*****/
 		htmlBuild: './serve/**/*.html',
+
 		/****
 		* Style
 		*****/
@@ -21,9 +24,30 @@ module.exports = function() {
 		/****
 		* js
 		*****/
-		everyjs: './src/assets/js/**/*.js'
-		cleanjs: './serve/assets/js/**/*.js'
+		everyjs: './src/assets/js/**/*.js',
+		cleanjs: './serve/assets/js/**/*.js',
 
+		/****
+		* bower and npm
+		*****/
+		index: './serve/index.html',
+		bower: {
+			json: require('./bower.json'),
+			components: './bower_components/',
+			ignorePath: '../..'
+		}
+
+	};
+
+	///////////////////////
+
+	config.wiredepOptions = function() {
+		var options = {
+			bowerJson: config.bower.json,
+			componentSrc: config.bower.components,
+			ignorePath: config.bower.ignorePath
+		};
+		return options;
 	};
 
 	return config;

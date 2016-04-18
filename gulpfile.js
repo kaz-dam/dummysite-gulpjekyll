@@ -7,7 +7,7 @@ var del = require('del');
 var source = require('vinyl-source-stream');
 var _ = require('lodash');
 var $ = require('gulp-load-plugins')({lazy: true});
-var port = process.env.PORT || config.defaultPort; //todo
+var port = process.env.PORT || config.defaultPort;
 
 gulp.task('help', $.taskListing);
 gulp.task('default', ['help']);
@@ -49,8 +49,7 @@ gulp.task('images', ['clean-images'], function() {
 });
 
 gulp.task('clean', function() {
-	var delAll = [].concat(config.build); // ?
-	clean(delAll);
+	clean(config.build);
 });
 
 gulp.task('clean-images', function() {
@@ -74,6 +73,16 @@ gulp.task('clean-code', function() {
 });
 
 // wiredep, bower
+gulp.task('wiredep', function() {
+	log('Injecting the bower components into html');
+	var options = config.wiredepOptions();
+	var wiredep = require('wiredep').stream;
+
+	return gulp.src(config.index)
+			.pipe(wiredep(options))
+			.pipe($.inject(gulp.src(config.everyjs)))
+			.pipe(gulp.dest(config.index));
+});
 
 // hbs-tmpl
 
