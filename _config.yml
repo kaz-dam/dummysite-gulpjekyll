@@ -25,4 +25,4 @@ source: src
 destination: serve
 
 # Ignore these files because gulp will take care of those
-exclude: [assets]
+exclude: [assets, tmp]

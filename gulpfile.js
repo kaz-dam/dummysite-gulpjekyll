@@ -49,7 +49,8 @@ gulp.task('images', ['clean-images'], function() {
 });
 
 gulp.task('clean', function() {
-	clean(config.build);
+	var delAll = [].concat(config.build, config.tmpFiles);
+	clean(delAll);
 });
 
 gulp.task('clean-images', function() {
@@ -73,7 +74,7 @@ gulp.task('clean-code', function() {
 });
 
 // wiredep, bower
-gulp.task('wiredep', function() {
+gulp.task('wiredep', ['jekyll:dev', 'styles'], function() {
 	log('Injecting the bower components into html');
 	var options = config.wiredepOptions();
 	var wiredep = require('wiredep').stream;
@@ -81,20 +82,27 @@ gulp.task('wiredep', function() {
 	return gulp.src(config.index)
 			.pipe(wiredep(options))
 			.pipe($.inject(gulp.src(config.everyjs)))
-			.pipe(gulp.dest(config.index));
+			.pipe($.inject(gulp.src(config.buildCss)))
+			.pipe(gulp.dest(config.tmp))
+			.pipe($.callback(function() {
+				clean(config.index);
+				gulp.src(config.tmpFiles).pipe(gulp.dest(config.build));
+				clean(config.tmpFiles);
+			}));
 });
 
 // hbs-tmpl
 
 // browser-sync
 
-// jekyll
-
 // watch
 
 // build
 
 // test
+
+// jekyll
+gulp.task('jekyll:dev', $.shell.task('jekyll build'));
 
 // serve-dev
 
