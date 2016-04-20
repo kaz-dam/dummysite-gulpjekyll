@@ -25,7 +25,7 @@ module.exports = function() {
 		styleCompiler: 'Sass', // todo sass or less
 		style: src + 'assets/style/main.scss',
 		buildStyle: buildStyle,
-		buildCss: buildStyle + 'main.css',
+		buildCss: buildStyle + '*.css',
 
 		/****
 		* js
@@ -43,6 +43,8 @@ module.exports = function() {
 			ignorePath: '../..'
 		},
 		tmp: tmp,
+		tmpIndex: tmp + '**/index.html',
+		tmpStyle: tmp + '**/main.css',
 		tmpFiles: tmp + '**/*.*'
 
 	};

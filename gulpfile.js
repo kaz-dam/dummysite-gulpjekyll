@@ -74,7 +74,7 @@ gulp.task('clean-code', function() {
 });
 
 // wiredep, bower
-gulp.task('wiredep', ['jekyll:dev', 'styles'], function() {
+gulp.task('wiredep', ['jekyll:dev'], function() {
 	log('Injecting the bower components into html');
 	var options = config.wiredepOptions();
 	var wiredep = require('wiredep').stream;
@@ -82,13 +82,17 @@ gulp.task('wiredep', ['jekyll:dev', 'styles'], function() {
 	return gulp.src(config.index)
 			.pipe(wiredep(options))
 			.pipe($.inject(gulp.src(config.everyjs)))
+			.pipe(gulp.dest(config.tmp))
+			.pipe($.callback(tempFolder));
+});
+
+gulp.task('inject', ['styles'], function() {
+	log('Injecting all the needed components');
+
+	return gulp.src(config.index)
 			.pipe($.inject(gulp.src(config.buildCss)))
 			.pipe(gulp.dest(config.tmp))
-			.pipe($.callback(function() {
-				clean(config.index);
-				gulp.src(config.tmpFiles).pipe(gulp.dest(config.build));
-				clean(config.tmpFiles);
-			}));
+			.pipe($.callback(tempFolder));
 });
 
 // hbs-tmpl
@@ -125,4 +129,11 @@ function log(msg) {
 	} else {
 		$.util.log($.util.colors.yellow(msg));
 	}
+}
+
+function tempFolder() {
+	clean(config.index);
+	gulp.src(config.tmpIndex)
+		.pipe(gulp.dest(config.build));
+	clean(config.tmpFiles);
 }
