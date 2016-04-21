@@ -13,6 +13,7 @@ module.exports = function() {
 		fonts: src + 'assets/fonts/*.css',
 		images: src + 'assets/images/*.jpg',
 		buildImages: serve + 'assets/images/',
+		templates: src + 'assets/templates/*.hbs',
 
 		/****
 		* html
