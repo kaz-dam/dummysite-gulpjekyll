@@ -22,7 +22,7 @@ markdown: kramdown
 
 # File source and destination
 source: src
-destination: serve
+destination: tmp
 
 # Ignore these files because gulp will take care of those
 exclude: [assets, tmp]

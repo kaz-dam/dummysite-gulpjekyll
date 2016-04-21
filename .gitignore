@@ -112,3 +112,6 @@ _site/
 serve/
 .sass-cache/
 .jekyll-metadata
+
+# Custom folders
+tmp/
