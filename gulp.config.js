@@ -14,11 +14,17 @@ module.exports = function() {
 		images: src + 'assets/images/*.jpg',
 		buildImages: serve + 'assets/images/',
 		templates: src + 'assets/templates/*.hbs',
+		allFiles: [
+			src + '**/*.md',
+			src + '**/*.txt',
+			src + '**/*.xml'
+		],
 
 		/****
 		* html
 		*****/
 		htmlBuild: serve + '**/*.html',
+		htmlSrc: src + '**/*.html',
 
 		/****
 		* Style
