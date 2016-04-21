@@ -32,6 +32,7 @@ module.exports = function() {
 		*****/
 		everyjs: src + 'assets/js/**/*.js',
 		cleanjs: serve + 'assets/js/**/*.js',
+		jsClasses: src + 'assets/js/classes/',
 
 		/****
 		* bower and npm

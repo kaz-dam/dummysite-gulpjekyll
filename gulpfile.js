@@ -73,7 +73,7 @@ gulp.task('clean-code', function() {
 	clean(files);
 });
 
-// wiredep, bower
+// Run wiredep first, then inject
 gulp.task('wiredep', ['jekyll:dev'], function() {
 	log('Injecting the bower components into html');
 	var options = config.wiredepOptions();
@@ -81,7 +81,6 @@ gulp.task('wiredep', ['jekyll:dev'], function() {
 
 	return gulp.src(config.index)
 			.pipe(wiredep(options))
-			.pipe($.inject(gulp.src(config.everyjs)))
 			.pipe(gulp.dest(config.tmp))
 			.pipe($.callback(tempFolder));
 });
@@ -91,11 +90,25 @@ gulp.task('inject', ['styles'], function() {
 
 	return gulp.src(config.index)
 			.pipe($.inject(gulp.src(config.buildCss)))
+			.pipe($.inject(gulp.src(config.everyjs)))
 			.pipe(gulp.dest(config.tmp))
 			.pipe($.callback(tempFolder));
 });
 
 // hbs-tmpl
+gulp.task('tmpl', function() {
+	log('Rendering templates to a js file');
+
+	gulp.src(config.templates)
+		.pipe($.handlebars())
+		.pipe($.wrap('Handlebars.template(<%= contents %>)'))
+		.pipe($.declare({
+			root: 'module.exports',
+			noRedeclare: true
+		}))
+		.pipe($.concat('templates.js'))
+		.pipe(gulp.dest(config.jsClasses));
+});
 
 // browser-sync
 
