@@ -74,26 +74,26 @@ gulp.task('clean-code', function() {
 });
 
 // Run wiredep first, then inject
-gulp.task('wiredep', ['jekyll:dev', 'inject'], function() {
+gulp.task('wiredep', ['styles'], function() {
 	log('Injecting the bower components into html');
 	var options = config.wiredepOptions();
 	var wiredep = require('wiredep').stream;
 
-	return gulp.src(config.index)
+	return gulp.src(config.htmlForInject)
 			.pipe(wiredep(options))
-			.pipe(gulp.dest(config.tmp))
-			.pipe($.callback(tempFolder));
+			.pipe(gulp.dest(config.srcTemp));
 });
 
-gulp.task('inject', ['styles'], function() {
+gulp.task('inject', ['wiredep'], function() {
 	log('Injecting all the needed components');
+	var headFilter = $.filter('head.html'),
+		defaultFilter = $.filter('default.html');
 
-	return gulp.src(config.index)
+	return gulp.src(config.srcTempFiles)
 		.pipe($.inject(gulp.src(config.buildCss)))
-		.pipe($.inject(gulp.src(config.everyjs)))
-		.pipe(gulp.dest(config.tmp))
+		.pipe($.inject(gulp.src(config.everyjs)))	// serve!!!
+		.pipe(gulp.dest(config.tmp))	// $.filter()
 		.pipe($.callback(tempFolder));
-	
 });
 
 // hbs-tmpl
@@ -124,16 +124,16 @@ gulp.task('watch', function() {
 	], ['wiredep', 'inject'], browserSync.reload);
 });
 
-// build
-
-// test
+// test -> testing the code
 
 // jekyll
 gulp.task('jekyll:dev', $.shell.task('jekyll build'));
 
-// serve-dev
+// build-dev -> build for development
 
-// serve-build
+// build-prod -> build for production
+
+// serve -> set up local server from serve folder
 
 //////////////////////////////////
 
@@ -158,5 +158,5 @@ function tempFolder() {
 	clean(config.index);
 	gulp.src(config.tmpIndex)
 		.pipe(gulp.dest(config.build));
-	clean(config.tmpFiles);
+	clean(config.tmpIndex);
 }

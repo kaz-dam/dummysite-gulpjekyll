@@ -25,6 +25,12 @@ module.exports = function() {
 		*****/
 		htmlBuild: serve + '**/*.html',
 		htmlSrc: src + '**/*.html',
+		// htmlHead: src + '_includes/head.html',
+		// htmlDefault: src + '_layouts/default.html',
+		htmlForInject: [
+			src + '_includes/head.html',
+			src + '_layouts/default.html'
+		],
 
 		/****
 		* Style
@@ -44,16 +50,18 @@ module.exports = function() {
 		/****
 		* bower and npm
 		*****/
-		index: serve + 'index.html',
+		index: serve + '**/index.html',
 		bower: {
 			json: require('./bower.json'),
 			components: './bower_components/',
 			ignorePath: '../..'
 		},
 		tmp: tmp,
-		tmpIndex: tmp + '**/index.html',
+		tmpIndex: tmp + 'index.html',
 		tmpStyle: tmp + '**/main.css',
-		tmpFiles: tmp + '**/*.*'
+		tmpFiles: tmp + '**/*.*',
+		srcTemp: src + 'temp/',
+		srcTempFiles: src + 'temp/*.html'
 
 	};
 
