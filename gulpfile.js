@@ -49,8 +49,13 @@ gulp.task('images', ['clean-images'], function() {
 });
 
 gulp.task('clean', function() {
-	var delAll = [].concat(config.build, config.tmpFiles);
+	var delAll = [].concat(config.build, config.tmpFiles, config.srcTempFiles);
 	clean(delAll);
+});
+
+gulp.task('clean-temp', function() {
+	var delBothTempFolder = [].concat(config.tmpFiles, config.srcTempFiles);
+	clean(delBothTempFolder);
 });
 
 gulp.task('clean-images', function() {
@@ -74,7 +79,7 @@ gulp.task('clean-code', function() {
 });
 
 // Run wiredep first, then inject
-gulp.task('wiredep', ['styles'], function() {
+gulp.task('wiredep', ['clean-temp', 'styles'], function() {
 	log('Injecting the bower components into html');
 	var options = config.wiredepOptions();
 	var wiredep = require('wiredep').stream;
@@ -88,12 +93,12 @@ gulp.task('inject', ['wiredep'], function() {
 	log('Injecting all the needed components');
 	var headFilter = $.filter('head.html'),
 		defaultFilter = $.filter('default.html');
+	clean(config.htmlForInject);
 
 	return gulp.src(config.srcTempFiles)
-		.pipe($.inject(gulp.src(config.buildCss)))
-		.pipe($.inject(gulp.src(config.everyjs)))	// serve!!!
-		.pipe(gulp.dest(config.tmp))	// $.filter()
-		.pipe($.callback(tempFolder));
+		.pipe($.if('head.html', $.inject(gulp.src(config.buildCss)) ))
+		.pipe($.if('default.html', $.inject(gulp.src(config.everyjs)) ))	// serve!!
+		.pipe($.if('head.html', gulp.dest(config.htmlHead), gulp.dest(config.htmlDefault)));
 });
 
 // hbs-tmpl
@@ -152,11 +157,4 @@ function log(msg) {
 	} else {
 		$.util.log($.util.colors.yellow(msg));
 	}
-}
-
-function tempFolder() {
-	clean(config.index);
-	gulp.src(config.tmpIndex)
-		.pipe(gulp.dest(config.build));
-	clean(config.tmpIndex);
 }

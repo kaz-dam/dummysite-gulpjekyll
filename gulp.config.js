@@ -25,8 +25,8 @@ module.exports = function() {
 		*****/
 		htmlBuild: serve + '**/*.html',
 		htmlSrc: src + '**/*.html',
-		// htmlHead: src + '_includes/head.html',
-		// htmlDefault: src + '_layouts/default.html',
+		htmlHead: src + '_includes/',
+		htmlDefault: src + '_layouts/',
 		htmlForInject: [
 			src + '_includes/head.html',
 			src + '_layouts/default.html'
