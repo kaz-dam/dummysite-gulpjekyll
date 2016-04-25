@@ -124,8 +124,6 @@ gulp.task('browserify', function() {
 			.pipe(gulp.dest(config.jsFolder));
 });
 
-// browser-sync
-
 // watch
 gulp.task('watch', function() {
 	gulp.watch([
@@ -133,7 +131,7 @@ gulp.task('watch', function() {
 		config.templates,
 		config.cleanjs,
 		config.allFiles
-	], ['wiredep', 'inject'], browserSync.reload);
+	], ['wiredep', 'inject']);
 });
 
 // jekyll
@@ -143,12 +141,30 @@ gulp.task('jekyll-rebuild', ['jekyll:dev'], function() {
 });
 
 // build-dev -> build for development
+gulp.task('build-dev', ['jekyll:dev', 'fonts', 'images'], function() {
+
+});
 
 // build-prod -> build for production
 
 // serve -> set up local server from serve folder
+gulp.task('serve', ['build-dev', 'watch'], function() {
+	sync();
+});
 
 //////////////////////////////////
+
+function sync() {
+	if (browserSync.active) {
+		return;
+	}
+
+	var options = {
+
+	};
+
+	browserSync(options);
+}
 
 function clean(path) {
 	log('Cleaning out: ' + $.util.colors.blue(path));
