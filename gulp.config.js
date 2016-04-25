@@ -43,9 +43,11 @@ module.exports = function() {
 		/****
 		* js
 		*****/
+		jsFolder: src + 'assets/js/',
 		everyjs: src + 'assets/js/**/*.js',
 		cleanjs: serve + 'assets/js/**/*.js',
-		jsClasses: src + 'assets/js/classes/',
+		jsModules: src + 'assets/js/modules/',
+		mainJs: src + 'assets/js/main.js',
 
 		/****
 		* bower and npm

@@ -16,8 +16,8 @@ gulp.task('test-js', function() {
 	log('Testing js files with JSHint and JSCS');
 
 	return gulp.src(config.everyjs)
-			.pipe($.if(args.show, $.print()))
-			.pipe($.jscs())
+			.pipe($.if(args.verbose, $.print()))
+			// .pipe($.jscs())
 			.pipe($.jshint())
 			.pipe($.jshint.reporter('jshint-stylish', {verbose: true}))
 			.pipe($.jshint.reporter('fail'));
@@ -116,8 +116,15 @@ gulp.task('tmpl', function() {
 		.pipe(gulp.dest(config.jsClasses));
 });
 
-// browser-sync
+// Browserify
+gulp.task('browserify', function() {
+	return browserify(config.mainJs, {debug: true})
+			.bundle()
+			.pipe(source('bundle.js'))
+			.pipe(gulp.dest(config.jsFolder));
+});
 
+// browser-sync
 
 // watch
 gulp.task('watch', function() {
@@ -129,10 +136,11 @@ gulp.task('watch', function() {
 	], ['wiredep', 'inject'], browserSync.reload);
 });
 
-// test -> testing the code
-
 // jekyll
 gulp.task('jekyll:dev', $.shell.task('jekyll build'));
+gulp.task('jekyll-rebuild', ['jekyll:dev'], function() {
+	browserSync.reload;
+});
 
 // build-dev -> build for development
 
