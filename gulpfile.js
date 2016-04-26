@@ -96,8 +96,8 @@ gulp.task('inject', ['wiredep'], function() {
 	clean(config.htmlForInject);
 
 	return gulp.src(config.srcTempFiles)
-		.pipe($.if('head.html', $.inject(gulp.src(config.buildCss)) ))
-		.pipe($.if('default.html', $.inject(gulp.src(config.everyjs)) ))	// serve!!
+		.pipe($.if('head.html', $.inject(gulp.src(config.buildCss), {addPrefix: '.', addRootSlash: false}) ))
+		.pipe($.if('default.html', $.inject(gulp.src(config.serveBundle), {addPrefix: '.', addRootSlash: false}) ))
 		.pipe($.if('head.html', gulp.dest(config.htmlHead), gulp.dest(config.htmlDefault)));
 });
 
@@ -131,18 +131,26 @@ gulp.task('watch', function() {
 		config.templates,
 		config.cleanjs,
 		config.allFiles
-	], ['wiredep', 'inject']);
+	], ['jekyll-rebuild']);
+	gulp.watch([
+		config.srcStyle
+	], ['styles']);
 });
 
 // jekyll
 gulp.task('jekyll:dev', $.shell.task('jekyll build'));
-gulp.task('jekyll-rebuild', ['jekyll:dev'], function() {
+gulp.task('jekyll-rebuild', ['build-dev'], function() {
 	browserSync.reload;
 });
 
 // build-dev -> build for development
-gulp.task('build-dev', ['jekyll:dev', 'fonts', 'images'], function() {
+gulp.task('build-dev', ['jekyll:dev', 'fonts', 'images', 'styles'], function() {
+	log('Building the site in the serve folder');
 
+	var files = [].concat(config.tmpFiles, config.bundleJs);
+
+	return gulp.src(files)
+			.pipe($.if('bundle.js', gulp.dest(config.serveJs), gulp.dest(config.build)));
 });
 
 // build-prod -> build for production
@@ -159,8 +167,29 @@ function sync() {
 		return;
 	}
 
-	var options = {
+	log('Starting BrowserSync on the port ' + port);
 
+	var options = {
+		// proxy: 'localhost:' + port,
+		port: 3000,
+		files: [
+			config.build + '**/*.*'
+		],
+		ghostMode: {
+			clicks: true,
+			location: false,
+			forms: true,
+			scroll: true
+		},
+		server: {
+			baseDir: 'serve'
+		},
+		injectChanges: true,
+		logFileChanges: true,
+		logLevel: 'debug',
+		logPrefix: 'gulp-patterns',
+		notify: true,
+		reloadDelay: 500
 	};
 
 	browserSync(options);

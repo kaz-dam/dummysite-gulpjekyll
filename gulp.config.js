@@ -39,6 +39,7 @@ module.exports = function() {
 		style: src + 'assets/style/main.scss',
 		buildStyle: buildStyle,
 		buildCss: buildStyle + '*.css',
+		srcStyle: src + 'assets/style/**/*.*',
 
 		/****
 		* js
@@ -48,16 +49,22 @@ module.exports = function() {
 		cleanjs: serve + 'assets/js/**/*.js',
 		jsModules: src + 'assets/js/modules/',
 		mainJs: src + 'assets/js/main.js',
+		bundleJs: src + 'assets/js/bundle.js',
+		serveJs: serve + 'assets/js/',
+		serveBundle: serve + 'assets/js/bundle.js',
 
 		/****
 		* bower and npm
 		*****/
-		index: serve + '**/index.html',
 		bower: {
 			json: require('./bower.json'),
 			components: './bower_components/',
 			ignorePath: '../..'
 		},
+
+		/****
+		* Templates
+		*****/
 		tmp: tmp,
 		tmpIndex: tmp + 'index.html',
 		tmpStyle: tmp + '**/main.css',
@@ -72,8 +79,8 @@ module.exports = function() {
 	config.wiredepOptions = function() {
 		var options = {
 			bowerJson: config.bower.json,
-			componentSrc: config.bower.components,
-			ignorePath: config.bower.ignorePath
+			componentSrc: config.bower.components
+			// ignorePath: config.bower.ignorePath
 		};
 		return options;
 	};
