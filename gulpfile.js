@@ -78,27 +78,25 @@ gulp.task('clean-code', function() {
 	clean(files);
 });
 
-// Run wiredep first, then inject
-gulp.task('wiredep', ['clean-temp', 'styles'], function() {
+// Wiredep and inject
+gulp.task('wiredep', ['build-dev', 'styles'], function() {
 	log('Injecting the bower components into html');
 	var options = config.wiredepOptions();
 	var wiredep = require('wiredep').stream;
 
-	return gulp.src(config.htmlForInject)
+	return gulp.src(config.htmlBuild)
 			.pipe(wiredep(options))
-			.pipe(gulp.dest(config.srcTemp));
+			.pipe(gulp.dest(config.build));
 });
 
 gulp.task('inject', ['wiredep'], function() {
 	log('Injecting all the needed components');
-	var headFilter = $.filter('head.html'),
-		defaultFilter = $.filter('default.html');
 	clean(config.htmlForInject);
 
-	return gulp.src(config.srcTempFiles)
-		.pipe($.if('head.html', $.inject(gulp.src(config.buildCss), {addPrefix: '.', addRootSlash: false}) ))
-		.pipe($.if('default.html', $.inject(gulp.src(config.serveBundle), {addPrefix: '.', addRootSlash: false}) ))
-		.pipe($.if('head.html', gulp.dest(config.htmlHead), gulp.dest(config.htmlDefault)));
+	return gulp.src(config.htmlBuild)
+		.pipe($.inject(gulp.src(config.buildCss), {relative: true}))
+		.pipe($.inject(gulp.src(config.serveBundle), {relative: true}))
+		.pipe(gulp.dest(config.build));
 });
 
 // hbs-tmpl
@@ -138,7 +136,7 @@ gulp.task('watch', function() {
 });
 
 // jekyll
-gulp.task('jekyll:dev', $.shell.task('jekyll build'));
+gulp.task('jekyll:dev', ['clean-temp'], $.shell.task('jekyll build'));
 gulp.task('jekyll-rebuild', ['build-dev'], function() {
 	browserSync.reload;
 });
@@ -156,7 +154,7 @@ gulp.task('build-dev', ['jekyll:dev', 'fonts', 'images', 'styles'], function() {
 // build-prod -> build for production
 
 // serve -> set up local server from serve folder
-gulp.task('serve', ['build-dev', 'watch'], function() {
+gulp.task('serve', ['watch'], function() {
 	sync();
 });
 
@@ -173,7 +171,7 @@ function sync() {
 		// proxy: 'localhost:' + port,
 		port: 3000,
 		files: [
-			config.build + '**/*.*'
+			config.build + 'assets/style/*.css'
 		],
 		ghostMode: {
 			clicks: true,

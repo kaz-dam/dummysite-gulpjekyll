@@ -27,10 +27,7 @@ module.exports = function() {
 		htmlSrc: src + '**/*.html',
 		htmlHead: src + '_includes/',
 		htmlDefault: src + '_layouts/',
-		htmlForInject: [
-			src + '_includes/head.html',
-			src + '_layouts/default.html'
-		],
+		// htmlForInject: serve + '**/*.html',
 
 		/****
 		* Style
