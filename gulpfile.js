@@ -129,7 +129,7 @@ gulp.task('watch', function() {
 		config.templates,
 		config.cleanjs,
 		config.allFiles
-	], ['jekyll-rebuild']);
+	], ['inject']);
 	gulp.watch([
 		config.srcStyle
 	], ['styles']);
@@ -137,9 +137,10 @@ gulp.task('watch', function() {
 
 // jekyll
 gulp.task('jekyll:dev', ['clean-temp'], $.shell.task('jekyll build'));
-gulp.task('jekyll-rebuild', ['build-dev'], function() {
-	browserSync.reload;
-});
+// gulp.task('jekyll-rebuild', ['inject'], function() {	// build-dev ----> inject
+// 	log('Reloading browsersync');
+// 	browserSync.reload;
+// });
 
 // build-dev -> build for development
 gulp.task('build-dev', ['jekyll:dev', 'fonts', 'images', 'styles'], function() {
@@ -171,7 +172,7 @@ function sync() {
 		// proxy: 'localhost:' + port,
 		port: 3000,
 		files: [
-			config.build + 'assets/style/*.css'
+			config.build + '**/*.*'
 		],
 		ghostMode: {
 			clicks: true,
@@ -187,7 +188,7 @@ function sync() {
 		logLevel: 'debug',
 		logPrefix: 'gulp-patterns',
 		notify: true,
-		reloadDelay: 500
+		reloadDelay: 1000
 	};
 
 	browserSync(options);
