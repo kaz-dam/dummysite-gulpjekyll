@@ -79,7 +79,7 @@ gulp.task('clean-code', function() {
 });
 
 // Wiredep and inject
-gulp.task('wiredep', ['build-dev', 'styles'], function() {
+gulp.task('wiredep', ['build-dev'], function() {
 	log('Injecting the bower components into html');
 	var options = config.wiredepOptions();
 	var wiredep = require('wiredep').stream;
@@ -115,7 +115,7 @@ gulp.task('tmpl', function() {
 });
 
 // Browserify
-gulp.task('browserify', function() {
+gulp.task('browserify', ['tmpl'], function() {
 	return browserify(config.mainJs, {debug: true})
 			.bundle()
 			.pipe(source('bundle.js'))
@@ -139,7 +139,7 @@ gulp.task('watch', function() {
 gulp.task('jekyll:dev', ['clean-temp'], $.shell.task('jekyll build'));
 
 // build-dev -> build for development
-gulp.task('build-dev', ['jekyll:dev', 'fonts', 'images', 'styles'], function() {
+gulp.task('build-dev', ['jekyll:dev', 'fonts', 'images', 'styles', 'browserify'], function() {
 	log('Building the site in the serve folder');
 
 	var files = [].concat(config.tmpFiles, config.bundleJs);
@@ -152,7 +152,7 @@ gulp.task('build-dev', ['jekyll:dev', 'fonts', 'images', 'styles'], function() {
 gulp.task('build-prod', ['inject'], function() {
 	log('Optimizing everything for production');
 
-	
+
 
 	return gulp.src(config.htmlBuild)
 			.pipe($.plumber())
@@ -161,18 +161,41 @@ gulp.task('build-prod', ['inject'], function() {
 });
 
 // serve -> set up local server from serve folder
-gulp.task('serve', ['watch'], function() {
-	sync();
+gulp.task('serve-dev', function() {
+	sync(true);
+});
+
+gulp.task('serve-prod', function() {
+	sync(false);
 });
 
 //////////////////////////////////
 
-function sync() {
+function sync(isDev) {
 	if (browserSync.active) {
 		return;
 	}
 
 	log('Starting BrowserSync on the port ' + port);
+
+	if (isDev) {
+		gulp.watch([
+			config.htmlSrc,
+			config.templates,
+			config.everyjs,
+			config.allFiles
+		], ['inject']);
+		gulp.watch([
+			config.srcStyle
+		], ['styles']);
+	} else {
+		gulp.watch([
+			config.htmlSrc,
+			config.templates,
+			config.cleanjs,
+			config.allFiles
+		], ['build-prod']);
+	}
 
 	var options = {
 		// proxy: 'localhost:' + port,
