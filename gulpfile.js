@@ -111,7 +111,7 @@ gulp.task('tmpl', function() {
 			noRedeclare: true
 		}))
 		.pipe($.concat('templates.js'))
-		.pipe(gulp.dest(config.jsClasses));
+		.pipe(gulp.dest(config.jsModules));
 });
 
 // Browserify
@@ -136,7 +136,7 @@ gulp.task('watch', function() {
 });
 
 // jekyll
-gulp.task('jekyll:dev', ['clean-temp'], $.shell.task('jekyll build'));
+gulp.task('jekyll:dev', ['clean-temp'], $.shell.task('jekyll build --incremental --no-watch'));
 
 // build-dev -> build for development
 gulp.task('build-dev', ['jekyll:dev', 'fonts', 'images', 'styles', 'browserify'], function() {
@@ -152,11 +152,18 @@ gulp.task('build-dev', ['jekyll:dev', 'fonts', 'images', 'styles', 'browserify']
 gulp.task('build-prod', ['inject'], function() {
 	log('Optimizing everything for production');
 
-
+	var cssFilter = $.filter('**/*.css', {restore: true});
+	var jsFilter = $.filter('**/*.js', {restore: true});
 
 	return gulp.src(config.htmlBuild)
 			.pipe($.plumber())
 			.pipe($.useref())
+			.pipe(cssFilter)
+			.pipe($.csso())
+			.pipe(cssFilter.restore)
+			.pipe(jsFilter)
+			.pipe($.uglify())
+			.pipe(jsFilter.restore)
 			.pipe(gulp.dest(config.build));
 });
 
@@ -182,7 +189,7 @@ function sync(isDev) {
 		gulp.watch([
 			config.htmlSrc,
 			config.templates,
-			config.everyjs,
+			// config.everyjs,
 			config.allFiles
 		], ['inject']);
 		gulp.watch([
