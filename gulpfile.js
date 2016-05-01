@@ -137,10 +137,6 @@ gulp.task('watch', function() {
 
 // jekyll
 gulp.task('jekyll:dev', ['clean-temp'], $.shell.task('jekyll build'));
-// gulp.task('jekyll-rebuild', ['inject'], function() {	// build-dev ----> inject
-// 	log('Reloading browsersync');
-// 	browserSync.reload;
-// });
 
 // build-dev -> build for development
 gulp.task('build-dev', ['jekyll:dev', 'fonts', 'images', 'styles'], function() {
@@ -153,6 +149,16 @@ gulp.task('build-dev', ['jekyll:dev', 'fonts', 'images', 'styles'], function() {
 });
 
 // build-prod -> build for production
+gulp.task('build-prod', ['inject'], function() {
+	log('Optimizing everything for production');
+
+	
+
+	return gulp.src(config.htmlBuild)
+			.pipe($.plumber())
+			.pipe($.useref())
+			.pipe(gulp.dest(config.build));
+});
 
 // serve -> set up local server from serve folder
 gulp.task('serve', ['watch'], function() {

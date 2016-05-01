@@ -27,7 +27,6 @@ module.exports = function() {
 		htmlSrc: src + '**/*.html',
 		htmlHead: src + '_includes/',
 		htmlDefault: src + '_layouts/',
-		// htmlForInject: serve + '**/*.html',
 
 		/****
 		* Style
@@ -77,7 +76,6 @@ module.exports = function() {
 		var options = {
 			bowerJson: config.bower.json,
 			componentSrc: config.bower.components
-			// ignorePath: config.bower.ignorePath
 		};
 		return options;
 	};
