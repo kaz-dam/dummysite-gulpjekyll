@@ -36,6 +36,7 @@ module.exports = function() {
 		buildStyle: buildStyle,
 		buildCss: buildStyle + '*.css',
 		srcStyle: src + 'assets/style/**/*.*',
+		serveMain: serve + 'assets/style/main.css',
 
 		/****
 		* js

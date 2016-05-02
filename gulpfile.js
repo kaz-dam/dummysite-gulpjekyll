@@ -164,7 +164,11 @@ gulp.task('build-prod', ['inject'], function() {
 			.pipe(jsFilter)
 			.pipe($.uglify())
 			.pipe(jsFilter.restore)
-			.pipe(gulp.dest(config.build));
+			.pipe(gulp.dest(config.build))
+			.pipe($.callback(function() {
+				clean(config.serveBundle);
+				clean(config.serveMain);
+			}));
 });
 
 // serve -> set up local server from serve folder
