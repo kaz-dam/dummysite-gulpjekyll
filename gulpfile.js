@@ -15,7 +15,7 @@ gulp.task('default', ['help']);
 gulp.task('test-js', function() {
 	log('Testing js files with JSHint and JSCS');
 
-	return gulp.src(config.everyjs)
+	return gulp.src(config.bundleJs)
 			.pipe($.if(args.verbose, $.print()))
 			// .pipe($.jscs())
 			.pipe($.jshint())
@@ -115,24 +115,11 @@ gulp.task('tmpl', function() {
 });
 
 // Browserify
-gulp.task('browserify', ['tmpl'], function() {
+gulp.task('browserify', function() {
 	return browserify(config.mainJs, {debug: true})
 			.bundle()
 			.pipe(source('bundle.js'))
 			.pipe(gulp.dest(config.jsFolder));
-});
-
-// watch
-gulp.task('watch', function() {
-	gulp.watch([
-		config.htmlSrc,
-		config.templates,
-		config.cleanjs,
-		config.allFiles
-	], ['inject']);
-	gulp.watch([
-		config.srcStyle
-	], ['styles']);
 });
 
 // jekyll
@@ -192,10 +179,12 @@ function sync(isDev) {
 	if (isDev) {
 		gulp.watch([
 			config.htmlSrc,
-			config.templates,
-			// config.everyjs,
+			config.everyjs,
 			config.allFiles
 		], ['inject']);
+
+		gulp.watch(config.templates, ['tmpl']);
+
 		gulp.watch([
 			config.srcStyle
 		], ['styles']);

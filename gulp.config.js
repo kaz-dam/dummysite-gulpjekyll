@@ -42,7 +42,10 @@ module.exports = function() {
 		* js
 		*****/
 		jsFolder: src + 'assets/js/',
-		everyjs: src + 'assets/js/**/*.js',
+		everyjs: [
+			src + 'assets/js/**/*.js',
+			'!' + src + 'assets/js/bundle.js'
+		],
 		cleanjs: serve + 'assets/js/**/*.js',
 		jsModules: src + 'assets/js/modules/',
 		mainJs: src + 'assets/js/main.js',
