@@ -145,6 +145,8 @@ gulp.task('build-prod', ['inject'], function() {
 	return gulp.src(config.htmlBuild)
 			.pipe($.plumber())
 			.pipe($.useref())
+			.pipe($.if('!**/*.html', $.rev()))
+			.pipe($.revReplace())
 			.pipe(cssFilter)
 			.pipe($.csso())
 			.pipe(cssFilter.restore)
